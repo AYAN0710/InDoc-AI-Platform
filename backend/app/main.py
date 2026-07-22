@@ -4,7 +4,7 @@ from fastapi import UploadFile
 from fastapi import File
 from pathlib import Path
 from app.config import UPLOAD_FOLDER
-from app.pdf_service import extract_text_from_pdf
+from app.services.document_service import process_document
 
 app=FastAPI(title="InDoc",version="1.0")
 
@@ -20,12 +20,14 @@ async def upload_pdf(pdf:UploadFile=File(...)):
         return {
             "error":"Only PDF files are allowed."
         }
-    file_path=UPLOAD_FOLDER/pdf.filename
-    with open(file_path,"wb") as buffer:
-        shutil.copyfileobj(pdf.file,buffer)
-    extracted_text=extract_text_from_pdf(str(file_path))
+    pdf_path=UPLOAD_FOLDER/pdf.filename
+    with open(pdf_path,"wb") as file:
+        shutil.copyfileobj(pdf.file,file)
+    result=process_document(str(pdf_path))
     return {
         "filename":pdf.filename,
-        "characters":len(extracted_text),
-        "text":extracted_text
+        "characters":len(result["text"]),
+        "summary":result["summary"],
+        "text":result["text"],
+        "chunks":result["chunks"]
     }
