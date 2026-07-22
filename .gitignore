@@ -1,0 +1,71 @@
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled Python files
+*.so
+
+# ============================
+# Virtual Environment
+# ============================
+myenv/
+venv/
+env/
+ENV/
+
+# ============================
+# Environment Variables
+# ============================
+.env
+
+# ============================
+# VS Code
+# ============================
+.vscode/
+
+# ============================
+# Python Cache
+# ============================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ============================
+# Uploads
+# Ignore uploaded PDFs/images
+# Keep the folder by adding .gitkeep
+# ============================
+backend/app/uploads/*
+!backend/app/uploads/.gitkeep
+
+# ============================
+# Logs
+# ============================
+*.log
+
+# ============================
+# SQLite Database
+# ============================
+*.db
+*.sqlite3
+
+# ============================
+# OS Files
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# Jupyter
+# ============================
+.ipynb_checkpoints/
+
+# ============================
+# Build Files
+# ============================
+build/
+dist/
+*.egg-info/
