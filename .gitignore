@@ -38,8 +38,8 @@ ENV/
 # Ignore uploaded PDFs/images
 # Keep the folder by adding .gitkeep
 # ============================
-backend/app/uploads/*
-!backend/app/uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # ============================
 # Logs
@@ -69,3 +69,7 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+
+# Vector Database
+vector_database/
+backend/vector_database/

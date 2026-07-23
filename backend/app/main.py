@@ -1,10 +1,11 @@
 import shutil
 from fastapi import FastAPI
 from fastapi import UploadFile
-from fastapi import File
+from fastapi import File,Body
 from pathlib import Path
 from app.config import UPLOAD_FOLDER
 from app.services.document_service import process_document
+from app.services.vector_search import search
 
 app=FastAPI(title="InDoc",version="1.0")
 
@@ -31,3 +32,18 @@ async def upload_pdf(pdf:UploadFile=File(...)):
         "text":result["text"],
         "chunks":result["chunks"]
     }
+    
+@app.post("/search")
+def semantic_search(query:str=Body(...)):
+    result=search(query)
+    return result
+
+from pydantic import BaseModel
+from app.services.rag_service import ask_question
+
+class QuestionRequest(BaseModel):
+    query:str
+
+@app.post("/ask")
+def ask(request:QuestionRequest):
+    return ask_question(request.query)

@@ -9,3 +9,12 @@ MAX_SUMMARY_LENGTH=180
 MIN_SUMMARY_LENGTH=50
 CHUNK_SIZE=256
 CHUNK_OVERLAP=40
+EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GEMINI_API_KEY=os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL="gemini-3.1-flash-lite"
