@@ -36,4 +36,7 @@ def store_document(
         metadatas=metadatas
     )
 
-    print(f"{filename} stored successfully.")
+def delete_document_vectors(document_id:str):
+    collection.delete(where={
+        "document_id":document_id
+    })
