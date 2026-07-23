@@ -1,11 +1,13 @@
 import shutil
 from fastapi import FastAPI
 from fastapi import UploadFile
-from fastapi import File,Body
+from fastapi import File,Body,Form,HTTPException
 from pathlib import Path
 from app.config import UPLOAD_FOLDER
 from app.services.document_service import process_document
 from app.services.vector_search import search
+from app.services.loaders.text_loader import extract_user_text
+from app.services.document_loader import load_document
 
 app=FastAPI(title="InDoc",version="1.0")
 
@@ -16,34 +18,49 @@ def home():
     }
     
 @app.post("/upload")
-async def upload_pdf(pdf:UploadFile=File(...)):
-    if pdf.content_type!="application/pdf":
-        return {
-            "error":"Only PDF files are allowed."
-        }
-    pdf_path=UPLOAD_FOLDER/pdf.filename
-    with open(pdf_path,"wb") as file:
-        shutil.copyfileobj(pdf.file,file)
-    result=process_document(str(pdf_path))
-    return {
-        "filename":pdf.filename,
-        "characters":len(result["text"]),
-        "summary":result["summary"],
-        "text":result["text"],
-        "chunks":result["chunks"]
-    }
+async def process_input(file:UploadFile | None=File(None),
+                        text: str | None = Form(None)):
+    if file:
+        file_path=UPLOAD_FOLDER/file.filename
+        with open(file_path,"wb") as buffer:
+            shutil.copyfileobj(file.file,buffer)
+        document_text=load_document(str(file_path))
+        filename=file.filename
+    elif text:
+        document_text=extract_user_text(text)
+        filename=file.filename
+    else:
+        raise HTTPException(status_code=400,detail="Please provide file or text.")
     
-@app.post("/search")
-def semantic_search(query:str=Body(...)):
-    result=search(query)
-    return result
-
+    result=process_document(document_text=document_text,
+                            filename=file.filename)
+    return {
+        "document_id": result["document_id"],
+        "filename": result["filename"],
+        "summary": result["summary"],
+        "total_chunks": len(result["chunks"])
+}
+    
 from pydantic import BaseModel
 from app.services.rag_service import ask_question
 
+class SearchRequest(BaseModel):
+    query:str
+    document_id:str
+    
+@app.post("/search")
+def semantic_search(request:SearchRequest):
+    return search(
+        query=request.query,
+        document_id=request.document_id
+    )
+
+
 class QuestionRequest(BaseModel):
     query:str
+    document_id:str
 
 @app.post("/ask")
 def ask(request:QuestionRequest):
-    return ask_question(request.query)
+    return ask_question(request.query,
+                        document_id=request.document_id)

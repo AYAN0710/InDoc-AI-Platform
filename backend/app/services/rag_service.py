@@ -1,8 +1,8 @@
 from app.services.vector_search import search
 from app.services.llm_service import generate_answer
 
-def ask_question(query:str):
-    results=search(query=query,top_k=3)
+def ask_question(query:str,document_id:str):
+    results=search(query=query,document_id=document_id)
     retrieved_chunks=results["documents"][0]
     context="\n\n".join(retrieved_chunks)
     

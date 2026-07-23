@@ -7,4 +7,4 @@ def extract_text_from_pdf(pdf_path:str)->str:
         extracted_text+=page.get_text()
         extracted_text+="\n"
     document.close()
-    return extracted_text
+    return extracted_text.strip()
