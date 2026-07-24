@@ -73,3 +73,19 @@ dist/
 # Vector Database
 vector_database/
 backend/vector_database/
+
+# ============================
+# Frontend / Node.js
+# ============================
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.eslintcache
+*.tsbuildinfo
+
+# ============================
+# Package Manager Lock Files
+# (keep package-lock.json, ignore others)
+# ============================
+yarn.lock
+pnpm-lock.yaml

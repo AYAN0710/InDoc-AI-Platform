@@ -19,9 +19,19 @@ from app.services.vector_store import delete_document_vectors
 from app.services.file_service import delete_uploaded_file
 from pydantic import BaseModel
 from app.services.rag_service import ask_question
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app=FastAPI(title="InDoc",version="1.0")
+
+# Allow all origins so the React frontend (localhost:3000) can connect
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind=engine)
 
